@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- external styling-->
+<link rel="stylesheet" href="index.css"/>
+<title>Country Search API</title>
+</head>
+<!--internal styling-->
+<style>  
+body{ 
+  background-image: linear-gradient(to right , #cb2d3e , #ef473a);
+  overflow: hidden;
+}
+  .card {
+    background-color: white;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    margin: 15%;
+    margin-left: 35%;
+    margin-top: 5%;
+    width: 30%;
+    border-radius: 5px;
+  }
+    
+    .card:hover {
+      box-shadow: 0 8px 16px 0 rgba(252, 251, 251, 0.2);
+      cursor: pointer;
+    }
+    
+  img {
+    border: 1px solid black;
+    border-radius: 5px 5px 0 0;
+  }
+    
+  .container {
+    padding: 2px 16px;
+  }
+  input[type=text] {
+  width: 130px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: white;
+  background-position: 10px 10px; 
+  background-repeat: no-repeat;
+  padding: 12px 20px 12px 40px;
+  -webkit-transition: width 0.4s ease-in-out;
+  transition: width 0.4s ease-in-out;
+}
+
+input[type=text]:focus {
+  width: 50%;
+}
+.wrap {
+  margin-top: 5%;
+}
+#cardName{
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+    </style>
+  <body onload="onLoad()">    
+    <center>
+      <!--Search box-->
+      <div class="wrap">
+        <h1>Search Country Here..</h1>
+        <input type="text" id="searchKeyword" placeholder="Search .."><br>
+        <button class="button" onclick="MakeApiCall()"><span>Search</span></button>
+      </div>
+    </center>
+    <!--Element for displaying card-->
+    <div class="card" id = "countryCard">
+      <img alt="Country Flag" style="width:100%" id="countryFlag" onclick="window.location.href = 'country.html';">
+      <div class="container" onclick="window.location.href = 'country.html';">
+        <center><p id ="cardName"></p></center>  
+      </div>
+    </div>
+<!--Script Code starts-->
+    <script>
+    function onLoad() {    
+      document.getElementById("countryCard").style.display="none";
+    }
+    
+    function MakeApiCall() {
+      var searchKeyword = document.getElementById("searchKeyword").value;
+      if(searchKeyword == "") {
+        alert("Provide country name to proceed..");
+      }
+      else {
+        countryName = document.getElementById("searchKeyword").value;
+        url = encodeURI("https://restcountries.eu/rest/v2/name/"+countryName+"?fullText=true");
+        fetch(url) // Call the fetch function passing the url of the API as a parameter
+        .then((resp) => resp.json())                            
+        .then(function(resp) {
+          //Parsing the JSON response
+          document.getElementById("cardName").innerHTML = resp[0].name;
+          document.getElementById("countryFlag").src= resp[0].flag;
+          document.getElementById("countryCard").style.display="block";
+          localStorage.setItem("jsonData",JSON.stringify(resp));
+          }).catch(function() {
+            document.getElementById("countryCard").style.display="none";
+            //If country is not found..
+            alert("Oops!Country Not Found");
+          });
+        }
+      }
+  </script>
+  <!--Script code ends..-->
+</body>
+</html>
